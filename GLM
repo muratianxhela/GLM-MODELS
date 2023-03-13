@@ -190,9 +190,7 @@ lines(fitted(cement.glm1)~tempo, col=3)
 # visto che la curva verde sembra più vicina ai dati e si riferisce ad un modello più parsimonioso, 
 # il modello Gamma con funzione di legame logaritmica risulta preferibile.
 
-#ESERCIZIO: Si provi ad analizzare  dati tramite un mln, utilizzando come variabile risposta il
-#           reciproco della resistenza e come variabile esplicativa il reciproco della radice quadrata
-#           del tempo. Si commenti l'analisi dei residui e si confronti il modello con i precedenti.
+
 par(mfrow=c(1,1))
 plot(sqrt(1/tempo),1/resistenza)
 cement.lm<-lm(I(1/resistenza)~I(sqrt(1/tempo)))
@@ -369,7 +367,7 @@ lines(logdose, hatpi, lty=2)  #associare ai pti osservati sulla scala originaria
 hatpi2<-fitted(Beetles.glm2)
 lines(logdose, hatpi2, lty=3, col=2)
 #a livello grafico diff in term di aic poca
-#per esercizio:adattare modello loglogc, sovrapporre e ottenere graf pag 173
+
 
 #valutare capacità predittiva con curva ROC
 
