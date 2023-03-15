@@ -1,32 +1,34 @@
-#Principali argomenti di glm:
-  # formula: come per lm
-  # family: che può essere binomial, gaussian, Gamma, Poisson,...
-  # link: come argomento di family (default è il legame canonico)
+***Principali argomenti di glm**:
 
-#Principali funzioni applicabili all'oggetto glm:
-  # summary: per ottenere il risultato di un oggetto glm
-  # confint: per ottenere gli IC per i coefficienti di regressione
-  # anova: per ocnfrontare modelli annidati tramite test di devianza
-  # plot: per ottenere l'analisi grafica dei residui
-  # fitted: per ottenere i valori stimati da eta_i.hat
-  # predict: per ottenere i valori del predittore lineare
-  # residuals: per ottenere i resudui del modello
-  # rstandard: per ottenere i residui standardizzati
-  # qresiduals: (libreria 'statmod') per ottenere i residui-quantile
+ - formula: come per lm
+ - family: che può essere binomial, gaussian, Gamma, Poisson,...
+ -  link: come argomento di family (default è il legame canonico)
 
+*Principali funzioni applicabili all'oggetto glm*:
 
+  - summary: per ottenere il risultato di un oggetto glm
+  -  confint: per ottenere gli IC per i coefficienti di regressione
+  - anova: per ocnfrontare modelli annidati tramite test di devianza
+  - plot: per ottenere l'analisi grafica dei residui
+  -  fitted: per ottenere i valori stimati da eta_i.hat
+  - predict: per ottenere i valori del predittore lineare
+  - residuals: per ottenere i resudui del modello
+  - rstandard: per ottenere i residui standardizzati
+  - qresiduals: (libreria 'statmod') per ottenere i residui-quantile
+
+```
 setwd("C:\\Users\\39389\\CartellaDati")
 
 clotting <- read.table("clotting.dat") 
 attach(clotting) 
-
-###ANALISI GRAFICA###
-
+```
+ANALISI GRAFICA
+```
 plot(log(u),tempo,type="n")
 points(log(u[lotto == "uno"]),tempo[lotto == "uno"])
 points(log(u[lotto != "uno"]),tempo[lotto != "uno"],pch=19,col=2)
-
-###ADATTAMENTO DEL MODELLO GLM GAMMA###
+```
+ADATTAMENTO DEL MODELLO GLM GAMMA
 
 #funzione di legame: legame canonico.
 
