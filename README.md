@@ -2,9 +2,9 @@
 
 Utilizzando il software statistico R, vengono forniti gli strumenti per l'analisi dei dati tramite i diversi modelli parametrici e semiparametrici, usando il dataset "Datasets for Use with Salvan, Sartori and Pace (2020)", in particolare in questo progetto si è considerato il dataset clotting and beetels. 
 
-***Principali argomenti di glm**:
+**Principali argomenti di glm**:
 
- - formula: come per lm
+ - formula: come per lm;
  - family: che può essere binomial, gaussian, Gamma, Poisson,...
  -  link: come argomento di family (default è il legame canonico)
 
@@ -32,25 +32,26 @@ plot(log(u),tempo,type="n")
 points(log(u[lotto == "uno"]),tempo[lotto == "uno"])
 points(log(u[lotto != "uno"]),tempo[lotto != "uno"],pch=19,col=2)
 ```
-ADATTAMENTO DEL MODELLO GLM GAMMA
-
-#funzione di legame: legame canonico.
-
+ADATTAMENTO DEL MODELLO GLM GAMMA-funzione di legame: legame canonico.
+```
 clotting.glm <- glm(tempo~log(u)+lotto,family=Gamma("inverse"))
 summary(clotting.glm)
-## entrambe le variabili esplicative risultano significative.
-
-#introduzione dell'effetto di interazione tra le due esplicative.
+```
+Entrambe le variabili esplicative risultano significative. Adesso possiamo introdure dell'effetto di interazione tra le due esplicative.
+```
 clotting.glm2 <- update(clotting.glm,.~.+log(u):lotto) 
 summary(clotting.glm2)
-# l'effetto di interazione è fortemente significativo, il secondo modello risulta preferibile.
+```
+L'effetto di interazione è fortemente significativo, il secondo modello risulta preferibile.
 
-#Conferma ulteriore: CONFRONTO TRA LE DEVIANZE ('anova')
+Conferma ulteriore: CONFRONTO TRA LE DEVIANZE ('anova')
+```
 anova(clotting.glm,clotting.glm2,test="F")
-# => Il modello sembra fornire un buon adattamento ai dati osservati 
+```
+Il modello sembra fornire un buon adattamento ai dati osservati. 
 
-#Grafico ###
-
+Grafico
+```
 par(mfrow=c(1,2),pty="s") 
 plot(log(u),tempo,type="n",ylim=range(fitted(clotting.glm2),tempo)) 
 points(log(u[lotto == "uno"]),tempo[lotto == "uno"])
@@ -58,24 +59,27 @@ points(log(u[lotto != "uno"]),tempo[lotto != "uno"],pch=19,col=2)
 points(log(u),fitted(clotting.glm2),col=3,pch=4) 
 plot(tempo,fitted(clotting.glm2),xlab="valori osservati", ylab="valori stimati")
 abline(0,1,col=2)
-
-#Provi a stimare un modello gamma ocn funzione di legame logaritmica e si confronti 
-#           l'adattamento con quello ottenuto attraverso il legame canonico.
-  #funzione di legame: legame canonico.
+```
+Provi a stimare un modello gamma ocn funzione di legame logaritmica e si confronti. L'adattamento con quello ottenuto attraverso il legame canonico.
+```
   clotting.glmE1 <- glm(tempo~log(u)+lotto,family=Gamma("log"))
   summary(clotting.glmE1)
-  ## entrambe le variabili esplicative risultano significative; p-value altamente ***.
-
-  #introduzione dell'effetto di interazione tra le due esplicative.
+```
+ Entrambe le variabili esplicative risultano significative; p-value altamente. Introduzione dell'effetto di interazione tra le due esplicative.
+ ```
   clotting.glmE2 <- update(clotting.glmE1,.~.+log(u):lotto) 
   summary(clotting.glmE2)
-  # l'effetto di interazione NON è fortemente significativo, il primo modello risulta preferibile.
+  ```
+L'effetto di interazione NON è fortemente significativo, il primo modello risulta preferibile.
 
-  #Conferma ulteriore: CONFRONTO TRA LE DEVIANZE ('anova')
+Conferma ulteriore: CONFRONTO TRA LE DEVIANZE ('anova')
+  ```
   anova(clotting.glmE1,clotting.glmE2,test="F")
-  # => Il modello sembra fornire un buon adattamento ai dati osservati 
+  ```
+ Il modello sembra fornire un buon adattamento ai dati osservati.
 
-  #Grafico 
+Grafico 
+```
   par(mfrow=c(1,2),pty="s") 
   plot(log(u),tempo,type="n",ylim=range(fitted(clotting.glmE1),tempo)) 
   points(log(u[lotto == "uno"]),tempo[lotto == "uno"])
@@ -85,69 +89,74 @@ abline(0,1,col=2)
   abline(0,1,col=2)
   
 detach(clotting)  
-
-#######################################################################################  
-#dataset="chimps.dat"
+```
+SECOND DATASET- dataset="chimps.dat"
+```
 library(SMPracticals)
 data(chimps)
 attach(chimps)
 head(chimps)  
-
-#STIMA DEL MODELLO
-#modello Gamma con predittore additivo (senza termine di interazione), con legame canonico (inversa)
+```
+STIMA DEL MODELLO
+Modello Gamma con predittore additivo (senza termine di interazione), con legame canonico (inversa).
+```
 chimps.glm<-glm(y~chimp+word,family=Gamma)
 summary(chimps.glm)
-#   N.B. viene calcolato anche il parametro di dispersione. 
-#         Può essere calcolato manualmente anche così:
+```
+N.B. viene calcolato anche il parametro di dispersioneche tra l'altro può essere calcolato manualmente anche così:
+```
 muhat<-fitted(chimps.glm)
 phihat<-sum((y-muhat)^2/muhat^2)/chimps.glm$df.residual
 phihat
+```
+Tre possibili modi di confroto della significaatività di un paramentro:
 
-#Tre possibili modi di confroto della significaatività di un paramentro:
-# 1_ TEST TRA DEVIANZE
+-  TEST TRA DEVIANZE
+```
 D0<-chimps.glm$null.deviance     #Devianza nulla del glm
 DC<-chimps.glm$deviance          #Devianza residua del glm
 df<-chimps.glm$df.null-chimps.glm$df.residual #gradi di libertà (differenza)
 t<-(D0-DC)/phihat      #test statistico sulla devianza
 alphaoss<- 1-pchisq(t,df)   #livello di significatività osservato
 alphaoss
-# Il modello stimato spiega i dati significativamente meglio del modello nullo (di ccs)
+```
+Il modello stimato spiega i dati significativamente meglio del modello nullo (di ccs)
 
-# 2_ TEST RAPPORTO DI VEROSIMIGLIANZA
-#assenza dell'effetto parola, avendo tenuto conto solo dell'effetto scimpanzè)
+-  TEST RAPPORTO DI VEROSIMIGLIANZA
+Assenza dell'effetto parola, avendo tenuto conto solo dell'effetto scimpanzè)
+```
 anova(chimps.glm, test="Chisq")
-#viene rifiutata l'ipotesi nulla (H0: tutti i coeff =0)
+```
+Viene rifiutata l'ipotesi nulla (H0: tutti i coeff =0)
 
-# 3_ CONFRONTO TRA DUE MODELLI (base e complesso)
+- CONFRONTO TRA DUE MODELLI (base e complesso)
+```
 chimps.glm0<-glm(y~chimp, family=Gamma)
 anova(chimps.glm0,chimps.glm, test="Chisq")
-
-#NOTA_1: l'ultimo risultato è preferibile perche, il risultato 'anova' applicato a un singolo glm,
-#       dipende dell'ordine secondo cui le variabili appaiono nella formula del predittore lineare.
-#NOTA_2: nel modello gamma, dove l'ignoto parametro di dispersione deve essere stimato, 
-#       la distribuzione nulla del test del log rapporto di verosimiglianza può essere approssimato
-#       da una distribuzione F.
+```
+NOTA_1: l'ultimo risultato è preferibile perche, il risultato 'anova' applicato a un singolo glm. Dipende dell'ordine secondo cui le variabili appaiono nella formula del predittore lineare.
+NOTA_2: nel modello gamma, dove l'ignoto parametro di dispersione deve essere stimato, la distribuzione nulla del test del log rapporto di verosimiglianza può essere approssimato da una distribuzione F.
+```
 anova(chimps.glm, test="F")
-# => con F i livelli di significatività osservati tendono ad essere più grandi di quelli del X^2.
-#     => la soluzione è più CONSERVATIVA!
-# lo stesso discorso vale se si utilitta la t (default) rispetto alla normale nei test di Wald sui 
-#  singoli coefficienti.
+```
+Con F i livelli di significatività osservati tendono ad essere più grandi di quelli del X^2. In questo caso la soluzione è più CONSERVATIVA. Lo stesso discorso vale se si utilitta la t (default) rispetto alla normale nei test di Wald sui singoli coefficienti.
 
-#funzione di legame logaritmo:
+Funzione di legame logaritmo:
+```
 chimps.glm1<-glm(y~chimp+word,family=Gamma(link=log))
 summary(chimps.glm1)
-#Interpretazione Intercetta: il logaritmo della media del tempo di apprendimento della parola 1 
-#                             da parte del primo scimpanzè.
-# più coeff. significativamente diversi da zero, AIC più basso => modello leggermente preferibile.
-
-#ESERCIZIO: Si conduca un'analisi grafica dei residui nei due modelli (leg. canonico e logaritmico)-
+```
+Interpretazione Intercetta: il logaritmo della media del tempo di apprendimento della parola da parte del primo scimpanzè. Più coeff. significativamente diversi da zero, AIC più basso => modello leggermente preferibile.
+```
 par(mfrow=c(2,2))
 plot(chimps.glm,1:4) #legame canonico
 plot(chimps.glm1,1:4) #legame logartmico
 
 detach(chimps)
 par(mfrow=c(1,1))
-#######################################################################################  
+```
+THIRD DATASET 
+
 #dataset= "cement.dat"
 cement<-read.table("cement.dat",header=TRUE)
 attach(cement)
