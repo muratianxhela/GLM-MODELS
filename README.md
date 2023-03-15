@@ -90,7 +90,7 @@ Grafico
   
 detach(clotting)  
 ```
-SECOND DATASET- dataset="chimps.dat"
+**SECOND DATASET- dataset="chimps.dat"**
 ```
 library(SMPracticals)
 data(chimps)
@@ -134,8 +134,8 @@ Viene rifiutata l'ipotesi nulla (H0: tutti i coeff =0)
 chimps.glm0<-glm(y~chimp, family=Gamma)
 anova(chimps.glm0,chimps.glm, test="Chisq")
 ```
-NOTA_1: l'ultimo risultato è preferibile perche, il risultato 'anova' applicato a un singolo glm. Dipende dell'ordine secondo cui le variabili appaiono nella formula del predittore lineare.
-NOTA_2: nel modello gamma, dove l'ignoto parametro di dispersione deve essere stimato, la distribuzione nulla del test del log rapporto di verosimiglianza può essere approssimato da una distribuzione F.
+- NOTA_1: l'ultimo risultato è preferibile perche, il risultato 'anova' applicato a un singolo glm. Dipende dell'ordine secondo cui le variabili appaiono nella formula del predittore lineare.
+- NOTA_2: nel modello gamma, dove l'ignoto parametro di dispersione deve essere stimato, la distribuzione nulla del test del log rapporto di verosimiglianza può essere approssimato da una distribuzione F.
 ```
 anova(chimps.glm, test="F")
 ```
@@ -155,57 +155,70 @@ plot(chimps.glm1,1:4) #legame logartmico
 detach(chimps)
 par(mfrow=c(1,1))
 ```
-THIRD DATASET 
-
-#dataset= "cement.dat"
+**THIRD DATASET-dataset= "cement.dat"**
+```
 cement<-read.table("cement.dat",header=TRUE)
 attach(cement)
-
-#ANALISI PRELIMINARI
+```
+ANALISI PRELIMINARI
+```
 str(cement)
 plot(tempo,resistenza)
 plot(1/tempo,resistenza)
 par(mfrow=c(1,2))
 plot(tempo,resistenza)
 plot(1/tempo,resistenza)
-#il reciproco del tempo di indurimento sembra più lineare
+```
+Come si pò vedere dai resultati il reciproco del tempo di indurimento sembra più lineare
 
-#ADATTAMENTO DEL MODELLO:
+ADATTAMENTO DEL MODELLO:
 
-#Modello Gamma con legame canonico sul reciproco del tempo
+Modello Gamma con legame canonico sul reciproco del tempo
+```
 cement.glm<-glm(resistenza~I(1/tempo),family = Gamma("inverse"))
 summary(cement.glm)
-#ANALISI DEI RESIDUI
+```
+ANALISI DEI RESIDUI
+```
 par(mfrow=c(2,2))
 plot(cement.glm,1:4)
-# mostra una possibile esistenza di una relazione quadratica.
+```
+Mostra una possibile esistenza di una relazione quadratica.
 
-#Modello con l'aggiunta di un termine quadratico della variabile esplicativa
+Modello con l'aggiunta di un termine quadratico della variabile esplicativa
+```
 cement.glm1<-update(cement.glm,.~.+I(1/tempo^2),family=Gamma("inverse"))
 summary(cement.glm1)
-#ANALISI DEI RESIDUI
+```
+ANALISI DEI RESIDUI
+```
 plot(cement.glm1,1:4)
-
-#CONFRONTO TRA MODELLI
+```
+CONFRONTO TRA MODELLI
+```
 anova(cement.glm,cement.glm1)
-#il secondo modello, già dall'analisi dei residui sembra migliorare nell'adattamento anche con anova.
+```
+Il secondo modello, già dall'analisi dei residui sembra migliorare nell'adattamento anche con anova.
 
-#Modello: (alternativa) con diversa funzione di legame (logaritmica).
+Modello: (alternativa) con diversa funzione di legame (logaritmica).
+```
 cement.glm2<-glm(resistenza~I(1/tempo),family= Gamma("log"))
 summary(cement.glm2)
-#ANALISI DEI RESIDUI
+```
+ANALISI DEI RESIDUI
+```
 plot(cement.glm2,1:4)
-
-#CONFRONTO TRA MODELLI:
-#in termini di vicinaza tra i valori predetti ai valori osservati
+```
+CONFRONTO TRA MODELLI:in termini di vicinaza tra i valori predetti ai valori osservati:
+```
 par(mfrow=c(1,1))
 plot(tempo,resistenza)
 lines(fitted(cement.glm)~tempo, col=2)
 lines(fitted(cement.glm1)~tempo, col=3)
-# visto che la curva verde sembra più vicina ai dati e si riferisce ad un modello più parsimonioso, 
-# il modello Gamma con funzione di legame logaritmica risulta preferibile.
+```
+Visto che la curva verde sembra più vicina ai dati e si riferisce ad un modello più parsimonioso, il modello Gamma con funzione di legame logaritmica risulta preferibile.
 
-
+```
 par(mfrow=c(1,1))
 plot(sqrt(1/tempo),1/resistenza)
 cement.lm<-lm(I(1/resistenza)~I(sqrt(1/tempo)))
@@ -222,57 +235,62 @@ plot(tempo,resistenza)
 lines(fitted(cement.glm)~tempo, col=2)
 lines(fitted(cement.glm1)~tempo, col=3)
 lines(fitted(cement.lm)~tempo,col="blue")
-########################################################
-
-#beetles
+```
+LAST DATASET-Beetles
+```
 Beetles<-read.table("beetles.dat", header=T)
 colnames(Beetles)<-c("num", "uccisi", "logdose")
 Beetles
 attach(Beetles)
-#var risp= prop successi
+```
 y<-uccisi/num
 y
-#variaz dose ha effetto e descrivere qdt effetto
-#modello saturo: ( distr binomiali, vet y= vet smv nel mod saturo)
+```
+- Var risp= prop successi
+- Variaz dose ha effetto e descrivere qdt effetto
+- Modello saturo: ( distr binomiali, vet y= vet smv nel mod saturo)
 
-#analisi grafiche##
-
+Analisi grafiche
+```
 plot(y~logdose)
-#andam monotono cresc (c'è effetto dose)
-#andam curva nn lineare-> usare funz legame diversa da identità, anche perchè funz legame deve essere coerente
+```
+- Andamento  monotono cresc (c'è effetto dose);
+- Andamento curva nn lineare-> usare funz legame diversa da identità, anche perchè funz legame deve essere coerente.
 
-#g(yi)= g(stima di mui)   se mod corr specificato g(mi)=etai= b1+b2xi
-
-#analisi esplorativa
-#sepre obiettivo se e che tipo di rel c'è tra risp (prop uccisi) ed esplic e lo vediamo su diverse scale x scegliere fnz legame
-#logit: anzichè prendere direttamente y prendo trasformazione
-
+Analisi esplorativa
+Sepre obiettivo se e che tipo di rel c'è tra risp (prop uccisi) ed esplic e lo vediamo su diverse scale x scegliere fnz legame
+Logit: anzichè prendere direttamente y prendo trasformazione
+```
 logit<-log(y/(1-y))
 logit  #ultimo è infinito, nn dà errore
-#problema:
 
 plot(logdose,logit)
-#il num di pti nn è 8 ma 7 xk ultimo pto è = oo 
-#--> tasformazione logistica empirica (correzione asintoticamente nn rilevante)
-
+```
+Il num di pti nn è 8 ma 7 xk ultimo pto è = oo tasformazione logistica empirica (correzione asintoticamente nn rilevante)
+```
 logitc<-log((y+0.5/num)/(1-y+0.5/num))
 logitc
 
-plot(logdose,logitc)  
-#logit circa 5= prob quote circa 5-> exp(5) cioè numero molto grande della proporz di successi su insuccessi
-#vediamo quanto lineare è la relazione (analisi grafica)
+plot(logdose,logitc)
+```
+`Logit circa 5= prob quote circa 5-> exp(5)` cioè numero molto grande della proporz di successi su insuccessi. Vediamo quanto lineare è la relazione (analisi grafica)
+```
 abline(lm(logitc~logdose), col=2)
-#discreto adattamento
+```
+Discreto adattamento
+```
 summary(lm(logitc~logdose))$r.squared # R-squared:  0.96
-
-#probit
+```
+Probit:
+```
 qnorm(y)
-#val di x per cui qnorm=1 infinito -> serve correzione
-#aggiusti un po' le y in modo che il qnorm ti venga un numero finito
-#qnorm(0)=-inf
+```
+- Val di x per cui qnorm=1 infinito -> serve correzione
+- Aggiusti un po' le y in modo che il qnorm ti venga un numero finito
+- qnorm(0)=-inf
 
-#probit con correzione empirica
-
+Probit con correzione empirica
+```
 yc<-y+0.1/num #correggiamo tt in un verso poi aggiustiamo
 yc
 yc[y>0.5]<-y[y>0.5]-0.1/num[y>0.5]
@@ -286,12 +304,14 @@ plot(logdose, logitc)
 abline(lm(logitc~logdose), col=1)
 points(logdose,probitc, pch=2, col=2)
 abline(lm(probitc~logdose), col=2)
-#nn si capisce ad occhio la migliore
+```
+Non si capisce ad occhio la migliore
+```
 summary(lm(probitc~logdose))$r.squared
-#adattamento stesso livello
-
-#faccio stessa cosa con correzioni 0 e 1 con le loglog complementare e cauchy
-
+```
+- Adattamento stesso livello.
+Faccio stessa cosa con correzioni 0 e 1 con le loglog complementare e cauchy
+```
 loglogc<-log(-log(1-yc))
 loglogc
 plot(logdose, loglogc)
@@ -308,11 +328,14 @@ abline(lm(cauchy~logdose), col=4)
 
 summary(lm(loglogc~logdose))$r.squared #0.99 bene
 summary(lm(cauchy~logdose))$r.squared # 0.3637069
-#loglogc migliore
+```
+Come si può vedere dai resultati in questo caso il modelllo loglogcè il migliore per i nostri dati 
 
-#modelli lin gen
-#regressione logistica
-#2 possibilità con dati raggruppati
+Modelli lin generalizzzati
+
+
+**Regressione logistica**
+Abbiamo 2 possibilità con dati raggruppati
 Beetles.glm<-glm(y~logdose, family=binomial, weights=num)
 summary(Beetles.glm)
 #equivalente:
